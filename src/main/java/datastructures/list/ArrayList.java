@@ -29,9 +29,7 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void prepend(T element) {
-        T[] newList = shiftListRight();
-        newList[0] = element;
-        list = newList;
+        insertAfter(-1, element);
     }
 
     public void set(int position, T element) {
@@ -58,12 +56,6 @@ public class ArrayList<T> implements List<T> {
         T[] newList = (T[]) new Object[newLength];
         int copyLength = Integer.min(list.length, newLength);
         System.arraycopy(list, 0, newList, 0, copyLength);
-        return newList;
-    }
-
-    private T[] shiftListRight() {
-        T[] newList = (T[]) new Object[list.length + 1];
-        System.arraycopy(list, 0, newList, 1, list.length);
         return newList;
     }
 
