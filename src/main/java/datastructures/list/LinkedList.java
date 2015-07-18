@@ -22,25 +22,9 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public T get(int position) {
-        Node targetNode;
-        Node node = head;
-        for (int i = 0; ; ++i) {
-            if (node == null) {
-                return null;
-            }
+        Node node = getNode(position);
 
-            if (i == position) {
-                targetNode = node;
-                break;
-            }
-            if (node.next == null) {
-                return null;
-            }
-
-            node = node.next;
-        }
-
-        return targetNode.value;
+        return node == null ? null : node.value;
     }
 
     @Override
@@ -55,7 +39,7 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public void insertAfter(int position, T element) {
-        Node currentNode = getNode(0);
+        Node currentNode = getNodeCreatingNullNodes(position);
         Node newNode = new Node(element);
         newNode.next = currentNode.next;
         currentNode.next = newNode;
@@ -70,7 +54,7 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public void set(int position, T element) {
-        Node node = getNodeCreating(position);
+        Node node = getNodeCreatingNullNodes(position);
         node.value = element;
     }
 
@@ -120,7 +104,7 @@ public class LinkedList<T> implements List<T> {
     }
 
     @NotNull
-    private Node getNodeCreating(int position) {
+    private Node getNodeCreatingNullNodes(int position) {
         if (head == null) {
             head = new Node(null);
         }

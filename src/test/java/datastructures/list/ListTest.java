@@ -131,7 +131,16 @@ abstract public class ListTest {
 
         assertThat(list().get(1), is(equalTo(3)));
         assertThat(list().get(2), is(equalTo(2)));
+    }
 
+    @Test
+    public void insertAfter_NonexistentElement_CreatesNullElementsBefore()
+    {
+        list().insertAfter(1, 2);
+
+        assertThat(list().get(0), is(nullValue()));
+        assertThat(list().get(1), is(nullValue()));
+        assertThat(list().get(2), is(equalTo(2)));
     }
 
     abstract protected List<Integer> list();
