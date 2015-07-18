@@ -40,16 +40,10 @@ public class ArrayList<T> implements List<T> {
     }
 
     public void remove(int position) {
-        list[position] = null;
-        int newLength = 0;
-        for (int i = list.length - 1; i >= 0; --i) {
-            if (list[i] != null) {
-                newLength = i + 1;
-                break;
-            }
-        }
-
-        list = copyList(newLength);
+        T[] newList = (T[]) new Object[list.length-1];
+        System.arraycopy(list, 0, newList, 0, position);
+        System.arraycopy(list, position + 1, newList, position, list.length - (position + 1));
+        list = newList;
     }
 
     private T[] copyList(int newLength) {

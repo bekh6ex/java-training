@@ -71,18 +71,18 @@ abstract public class ListTest {
     }
 
     @Test
-    public void removeLast_HasEmptyElementsInTheMiddle_ShouldStripOffThoseElements()
+    public void removeLast_HasEmptyElementsInTheMiddle_LeavesNullElements()
     {
         list().set(2, 1);
         assertThat(list().length(), is(equalTo(3)));
 
         list().remove(2);
 
-        assertThat(list().length(), is(equalTo(0)));
+        assertThat(list().length(), is(equalTo(2)));
     }
 
     @Test
-    public void removeElementsInTheMiddle_LengthShouldNotChange()
+    public void removeElementsInTheMiddle_LengthShouldChange()
     {
         list().set(1, 1);
         list().set(2, 1);
@@ -92,7 +92,7 @@ abstract public class ListTest {
         list().remove(2);
         list().remove(1);
 
-        assertThat(list().length(), is(equalTo(4)));
+        assertThat(list().length(), is(equalTo(2)));
     }
 
     @Test
