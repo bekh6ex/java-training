@@ -8,6 +8,12 @@ import static org.junit.Assert.assertThat;
 abstract public class ListTest {
 
     @Test
+    public void canAddAndGetSingleElementBack() {
+        list().set(0, 1);
+        assertThat(list().get(0), is(equalTo(1)));
+    }
+
+    @Test
     public void canAddAndGetElementBack() {
         list().set(0, 1);
         assertThat(list().get(0), is(equalTo(1)));
