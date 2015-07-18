@@ -5,6 +5,8 @@ public interface List<T> {
 
     void append(T element);
 
+    void insertAfter(int position, T element);
+
     void prepend(T element);
 
     void set(int position, T element);

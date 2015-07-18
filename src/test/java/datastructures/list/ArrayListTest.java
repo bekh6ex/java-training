@@ -1,5 +1,6 @@
 package ru.bekh.training.datastructures.list;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -108,5 +109,25 @@ public class ArrayListTest {
         arrayList.prepend(2);
         assertThat(arrayList.get(0), is(equalTo(2)));
         assertThat(arrayList.get(1), is(equalTo(1)));
+    }
+
+    @Test
+    public void insertAfter_SingleElement_CanGetItBack() {
+        arrayList.set(0, 0);
+        arrayList.insertAfter(0, 1);
+
+        assertThat(arrayList.get(1), is(equalTo(1)));
+    }
+
+    @Test
+    public void insertAfter_SeveralElements_InsertedInCorrectOrder()
+    {
+        arrayList.set(0, 1);
+        arrayList.insertAfter(0, 2);
+        arrayList.insertAfter(0, 3);
+
+        assertThat(arrayList.get(1), is(equalTo(3)));
+        assertThat(arrayList.get(2), is(equalTo(2)));
+
     }
 }
