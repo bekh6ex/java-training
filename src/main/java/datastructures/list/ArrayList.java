@@ -14,7 +14,7 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void append(T element) {
-        insert(list.length, element);
+        set(list.length, element);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ArrayList<T> implements List<T> {
         list = newList;
     }
 
-    public void insert(int position, T element) {
+    public void set(int position, T element) {
         int newLength = Integer.max(list.length, position + 1);
         T[] newList = copyList(newLength);
         newList[position] = element;

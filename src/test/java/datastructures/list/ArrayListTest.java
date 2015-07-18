@@ -1,6 +1,5 @@
 package ru.bekh.training.datastructures.list;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -12,25 +11,25 @@ public class ArrayListTest {
 
     @Test
     public void canAddAndGetElementBack() {
-        arrayList.insert(0, 1);
+        arrayList.set(0, 1);
         assertThat(arrayList.get(0), is(equalTo(1)));
-        arrayList.insert(1, 2);
+        arrayList.set(1, 2);
         assertThat(arrayList.get(1), is(equalTo(2)));
     }
 
     @Test
-    public void canInsertElementToAnyPositivePosition() {
-        arrayList.insert(1, 2);
+    public void canSetElementInAnyPositivePosition() {
+        arrayList.set(1, 2);
 
         assertThat(arrayList.get(1), is(equalTo(2)));
         assertThat(arrayList.get(0), is(nullValue()));
     }
 
     @Test
-    public void canInsertElementsInAnyOrder() {
+    public void canSetElementsInAnyOrder() {
 
-        arrayList.insert(1, 2);
-        arrayList.insert(0, 1);
+        arrayList.set(1, 2);
+        arrayList.set(0, 1);
 
         assertThat(arrayList.get(1), is(equalTo(2)));
         assertThat(arrayList.get(0), is(equalTo(1)));
@@ -39,7 +38,7 @@ public class ArrayListTest {
     @Test
     public void remove_CanNotGetThisElementAnymore()
     {
-        arrayList.insert(0, 1);
+        arrayList.set(0, 1);
 
         arrayList.remove(0);
 
@@ -47,11 +46,11 @@ public class ArrayListTest {
     }
 
     @Test
-    public void insert_LengthIsChanged()
+    public void set_LengthIsChanged()
     {
         assertThat(arrayList.length(), is(equalTo(0)));
 
-        arrayList.insert(0, 1);
+        arrayList.set(0, 1);
 
         assertThat(arrayList.length(), is(equalTo(1)));
     }
@@ -59,7 +58,7 @@ public class ArrayListTest {
     @Test
     public void remove_LengthIsChanged()
     {
-        arrayList.insert(0,1);
+        arrayList.set(0, 1);
         assertThat(arrayList.length(), is(equalTo(1)));
 
         arrayList.remove(0);
@@ -70,7 +69,7 @@ public class ArrayListTest {
     @Test
     public void removeLast_HasEmptyElementsInTheMiddle_ShouldStripOffThoseElements()
     {
-        arrayList.insert(2, 1);
+        arrayList.set(2, 1);
         assertThat(arrayList.length(), is(equalTo(3)));
 
         arrayList.remove(2);
@@ -81,9 +80,9 @@ public class ArrayListTest {
     @Test
     public void removeElementsInTheMiddle_LengthShouldNotChange()
     {
-        arrayList.insert(1, 1);
-        arrayList.insert(2, 1);
-        arrayList.insert(3, 1);
+        arrayList.set(1, 1);
+        arrayList.set(2, 1);
+        arrayList.set(3, 1);
         assertThat(arrayList.length(), is(equalTo(4)));
 
         arrayList.remove(2);

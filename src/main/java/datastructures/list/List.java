@@ -7,7 +7,7 @@ public interface List<T> {
 
     void prepend(T element);
 
-    void insert(int position, T element);
+    void set(int position, T element);
 
     void remove(int position);
 
