@@ -20,9 +20,10 @@ public class ArrayList<T> implements List<T> {
     @Override
     public void insertAfter(int position, T element) {
         T[] newList = (T[]) new Object[list.length+1];
-        System.arraycopy(list, 0, newList, 0, position + 1);
-        newList[position + 1] = element;
-        System.arraycopy(list, position + 1, newList, position + 2, list.length - (position + 1));
+        int newElementPosition = position + 1;
+        System.arraycopy(list, 0, newList, 0, newElementPosition);
+        newList[(newElementPosition)] = element;
+        System.arraycopy(list, newElementPosition, newList, newElementPosition + 1, list.length - (newElementPosition));
 
         list = newList;
     }
