@@ -9,7 +9,7 @@ public class ArrayList<T> implements List<T> {
             return null;
         }
 
-        return (T) list[position];
+        return list[position];
     }
 
     @Override
@@ -41,8 +41,7 @@ public class ArrayList<T> implements List<T> {
             }
         }
 
-        T[] newList = copyList(newLength);
-        list = newList;
+        list = copyList(newLength);
     }
 
     private T[] copyList(int newLength) {
