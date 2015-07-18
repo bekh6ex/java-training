@@ -12,10 +12,6 @@ public class LinkedList<T> implements List<T> {
         public Node(T value) {
             this.value = value;
         }
-
-        Node getLast() {
-            return next == null ? this : this.getLast();
-        }
     }
 
     Node head;
@@ -34,7 +30,12 @@ public class LinkedList<T> implements List<T> {
             return;
         }
 
-        head.getLast().next = this.new Node(element);
+        Node node = head;
+        while (node.next != null) {
+            node = node.next;
+        }
+
+        node.next = this.new Node(element);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class LinkedList<T> implements List<T> {
     @Override
     public int length() {
         Node node = head;
-        int length = 0;
+        int length;
         for (int i = 0; ; ++i) {
             if (node == null) {
                 length = i;
@@ -87,6 +88,7 @@ public class LinkedList<T> implements List<T> {
 
             node = node.next;
         }
+
         return length;
     }
 
@@ -100,6 +102,7 @@ public class LinkedList<T> implements List<T> {
 
             node = node.next;
         }
+
         return node;
     }
 
@@ -108,6 +111,7 @@ public class LinkedList<T> implements List<T> {
         if (head == null) {
             head = new Node(null);
         }
+
         Node node = head;
         for (int i = 0; i < position; ++i) {
             if (node.next == null) {
@@ -115,6 +119,7 @@ public class LinkedList<T> implements List<T> {
             }
             node = node.next;
         }
+
         return node;
     }
 }
