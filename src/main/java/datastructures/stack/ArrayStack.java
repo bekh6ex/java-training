@@ -26,7 +26,7 @@ public class ArrayStack<T> implements Stack<T> {
 
     @Override
     public T top() {
-        return null;
+        return list[newElementIndex - 1];
     }
 
     @Override

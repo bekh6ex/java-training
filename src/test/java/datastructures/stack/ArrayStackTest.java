@@ -45,6 +45,23 @@ public class ArrayStackTest extends StackTest {
         assertThat(new Integer[]{element1, element2, element3}, is(equalTo(new Integer[]{2, 1, 0})));
     }
 
+    @Test
+    public void top_PushedSomeElement_ReturnsThatElement()
+    {
+        stack.push(0);
+
+        assertThat(stack.top(), is(equalTo(0)));
+    }
+
+    @Test
+    public void top_PushedSomeElement_ReturnsThatElementEveryTime()
+    {
+        stack.push(0);
+
+        assertThat(stack.top(), is(equalTo(0)));
+        assertThat(stack.top(), is(equalTo(0)));
+    }
+
     @Override
     protected Stack<Integer> stack() {
         return stack;
