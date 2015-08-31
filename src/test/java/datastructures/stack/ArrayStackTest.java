@@ -22,6 +22,14 @@ public class ArrayStackTest extends StackTest {
     }
 
     @Test
+    public void isEmpty_PushedAndPoppedSomeElement_ReturnsTrue() {
+        stack.push(0);
+        stack.pop();
+
+        assertThat(stack.isEmpty(), is(equalTo(true)));
+    }
+
+    @Test
     public void pop_PushedOneElement_ReturnsThatElement()
     {
         stack.push(0);
