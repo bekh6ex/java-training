@@ -68,4 +68,19 @@ abstract public class QueueTest {
         assertThat(queue.peek(), is(equalTo(1)));
         assertThat(queue.peek(), is(equalTo(1)));
     }
+
+    @Test
+    public void multipleElementsEnqueued_ShouldBeDequeuedInCorrectOrder() throws Exception {
+        for (int i = 1; i < 1000; i++) {
+            for (int j = 1; j <= i; j++) {
+                queue.enqueue(j);
+            }
+
+            for (int j = 1; j <= i; j++) {
+                assertThat(queue.isEmpty(), is(false));
+                assertThat(queue.dequeue(), is(equalTo(j)));
+            }
+            assertThat(queue.isEmpty(), is(true));
+        }
+    }
 }
