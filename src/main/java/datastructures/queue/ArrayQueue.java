@@ -3,19 +3,19 @@ package ru.bekh.training.datastructures.queue;
 public class ArrayQueue<T> implements Queue<T> {
     public static final int STARTING_ARRAY_SIZE = 1;
     private T[] queue = createQueueArray(STARTING_ARRAY_SIZE);
-    private int headIndex = 0;
     private int tailIndex = 0;
+    private int headIndex = 0;
 
     @Override
     public void enqueue(T element) {
 
-        if (headIndex == queue.length ) {
+        if (tailIndex == queue.length ) {
             T[] newQueue = createQueueArray(queue.length * 2);
             System.arraycopy(queue, 0, newQueue, 0, queue.length);
             queue = newQueue;
         }
-        queue[headIndex] = element;
-        headIndex++;
+        queue[tailIndex] = element;
+        tailIndex++;
     }
 
     private T[] createQueueArray(int startingArraySize) {
@@ -24,18 +24,18 @@ public class ArrayQueue<T> implements Queue<T> {
 
     @Override
     public T dequeue() {
-        T result = queue[tailIndex];
-        tailIndex++;
+        T result = queue[headIndex];
+        headIndex++;
         return result;
     }
 
     @Override
     public T peek() {
-        return null;
+        return queue[headIndex];
     }
 
     @Override
     public boolean isEmpty() {
-        return headIndex == tailIndex;
+        return tailIndex == headIndex;
     }
 }

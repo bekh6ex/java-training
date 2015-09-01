@@ -51,4 +51,23 @@ public class ArrayQueueTest {
         assertThat(queue.dequeue(), is(equalTo(2)));
         assertThat(queue.dequeue(), is(equalTo(3)));
     }
+
+    @Test
+    public void peek_MultipleElementsEnqueued_ReturnsFirstElement()
+    {
+        queue.enqueue(1);
+        queue.enqueue(2);
+
+        assertThat(queue.peek(), is(equalTo(1)));
+    }
+
+    @Test
+    public void peek_CalledSeveralTimes_ReturnsSameElement()
+    {
+        queue.enqueue(1);
+        queue.enqueue(2);
+
+        assertThat(queue.peek(), is(equalTo(1)));
+        assertThat(queue.peek(), is(equalTo(1)));
+    }
 }
