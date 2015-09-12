@@ -1,5 +1,7 @@
 package ru.bekh.training.datastructures.tree;
 
+import ru.bekh.training.datastructures.queue.LinkedListQueue;
+import ru.bekh.training.datastructures.queue.Queue;
 import ru.bekh.training.datastructures.stack.LinkedListStack;
 import ru.bekh.training.datastructures.stack.Stack;
 
@@ -11,61 +13,84 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
     private BinarySearchTree<T> left;
     private BinarySearchTree<T> right;
 
-    private class InOrderIterator implements Iterator {
+    class InOrderIterator implements Iterator {
 
         private final BinarySearchTree<T> root = BinarySearchTree.this;
-        Stack<BinarySearchTree<T>> parents = new LinkedListStack<>();
-        BinarySearchTree<T> currentItem = null;
+        Stack<BinarySearchTree<T>> backTrace = new LinkedListStack<>();
+        BinarySearchTree<T> lastVisitedItem = null;
 
         public InOrderIterator() {
-            BinarySearchTree<T> mostLeftTree = root;
-            while (mostLeftTree != null) {
-                parents.push(mostLeftTree);
-                mostLeftTree = mostLeftTree.left;
-            }
+            backTrace.push(root);
+            movePointerToMostLeftNode();
         }
 
         @Override
         public boolean hasNext() {
             updateIterationPositionIfNeeded();
 
-            return !parents.isEmpty();
+            return !backTrace.isEmpty();
         }
 
         @Override
         public T next() {
             updateIterationPositionIfNeeded();
 
-            currentItem = parents.pop();
+            BinarySearchTree<T> currentItem = backTrace.pop();
             if (currentItem.right != null) {
                 BinarySearchTree<T> mostLeftTree = currentItem.right;
                 while (mostLeftTree != null) {
-                    parents.push(mostLeftTree);
+                    backTrace.push(mostLeftTree);
                     mostLeftTree = mostLeftTree.left;
                 }
             }
+
+            lastVisitedItem = currentItem;
 
             return currentItem.value;
         }
 
 
         private void updateIterationPositionIfNeeded() {
-            if (parents.isEmpty() && currentItem.right != null) {
-                BinarySearchTree<T> targetNode, node;
-                targetNode = currentItem.right;
-                node = root;
-                parents.push(node);
-                do {
-                    node = node.right;
-                    parents.push(node);
-                } while (node != targetNode);
-
-                BinarySearchTree<T> mostLeftTree = parents.top().left;
-                while (mostLeftTree != null) {
-                    parents.push(mostLeftTree);
-                    mostLeftTree = mostLeftTree.left;
-                }
+            if (backTrace.isEmpty() && lastVisitedItem.right != null) {
+                backTrace.push(lastVisitedItem.right);
+                movePointerToMostLeftNode();
             }
+        }
+
+        private void movePointerToMostLeftNode() {
+            BinarySearchTree<T> mostLeftTree = backTrace.top().left;
+            while (mostLeftTree != null) {
+                backTrace.push(mostLeftTree);
+                mostLeftTree = mostLeftTree.left;
+            }
+        }
+    }
+
+    class DepthFirstIterator implements Iterator {
+
+        private Queue<BinarySearchTree<T>> queue = new LinkedListQueue<>();
+        private BinarySearchTree<T> root = BinarySearchTree.this;
+
+        public DepthFirstIterator() {
+            queue.enqueue(root);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !root.isEmpty() && !queue.isEmpty();
+        }
+
+        @Override
+        public T next() {
+            BinarySearchTree<T> currentItem = queue.dequeue();
+            if (currentItem.left != null) {
+                queue.enqueue(currentItem.left);
+            }
+            if (currentItem.right != null) {
+                queue.enqueue(currentItem.right);
+            }
+
+            return currentItem.value;
         }
     }
 
@@ -160,6 +185,9 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
         switch (strategy) {
             case INORDER:
                 iterator = new InOrderIterator();
+                break;
+            case DEPTH_FIRST:
+                iterator = new DepthFirstIterator();
                 break;
             default:
                 throw new RuntimeException("Unknown strategy");
