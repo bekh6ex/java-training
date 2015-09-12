@@ -128,7 +128,7 @@ public class BinarySearchTreeTest {
     }
 
     @Test
-    public void iterateDepthFirst_SingleItem_IteratesIt()
+    public void iterateLevelOrder_SingleItem_IteratesIt()
     {
         tree.add(1);
 
@@ -136,7 +136,7 @@ public class BinarySearchTreeTest {
     }
 
     @Test
-    public void iterateDepthFirst_RootNodeHasTwoChildren_IteratesIt()
+    public void iterateLevelOrder_RootNodeHasTwoChildren_IteratesIt()
     {
         tree.add(2,1,3);
 
@@ -144,7 +144,7 @@ public class BinarySearchTreeTest {
     }
 
     @Test
-    public void iterateDepthFirst_ThreeLevelTree_IteratesIt()
+    public void iterateLevelOrder_ThreeLevelTree_IteratesIt()
     {
         tree.add(4,2,6,1,3,5,7);
 
