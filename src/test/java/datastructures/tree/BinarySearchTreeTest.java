@@ -114,15 +114,12 @@ public class BinarySearchTreeTest {
         tree.add(1);
         assertThat(iterator.next(), is(equalTo(1)));
         assertThat(iterator.hasNext(), is(false));
-        tree.add(4);
-        tree.add(3);
-        tree.add(2);
+        tree.add(4, 3, 2);
         assertThat(iterator.next(), is(equalTo(2)));
         assertThat(iterator.next(), is(equalTo(3)));
         assertThat(iterator.next(), is(equalTo(4)));
         assertThat(iterator.hasNext(), is(false));
-        tree.add(6);
-        tree.add(7);
+        tree.add(6, 7);
         assertThat(iterator.next(), is(equalTo(6)));
         assertThat(iterator.hasNext(), is(true));
         tree.add(5);
@@ -135,31 +132,23 @@ public class BinarySearchTreeTest {
     {
         tree.add(1);
 
-        checkThat(tree.iterator(Tree.IterationStrategy.DEPTH_FIRST)).iteratesInFollowingOrder(1);
+        checkThat(tree.iterator(Tree.IterationStrategy.LEVEL_ORDER)).iteratesInFollowingOrder(1);
     }
 
     @Test
     public void iterateDepthFirst_RootNodeHasTwoChildren_IteratesIt()
     {
-        tree.add(2);
-        tree.add(1);
-        tree.add(3);
+        tree.add(2,1,3);
 
-        checkThat(tree.iterator(Tree.IterationStrategy.DEPTH_FIRST)).iteratesInFollowingOrder(2,1,3);
+        checkThat(tree.iterator(Tree.IterationStrategy.LEVEL_ORDER)).iteratesInFollowingOrder(2,1,3);
     }
 
     @Test
     public void iterateDepthFirst_ThreeLevelTree_IteratesIt()
     {
-        tree.add(4);
-        tree.add(2);
-        tree.add(6);
-        tree.add(1);
-        tree.add(3);
-        tree.add(5);
-        tree.add(7);
+        tree.add(4,2,6,1,3,5,7);
 
-        checkThat(tree.iterator(Tree.IterationStrategy.DEPTH_FIRST)).iteratesInFollowingOrder(4,2,6,1,3,5,7);
+        checkThat(tree.iterator(Tree.IterationStrategy.LEVEL_ORDER)).iteratesInFollowingOrder(4,2,6,1,3,5,7);
     }
 
 
