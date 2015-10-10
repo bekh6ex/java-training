@@ -7,6 +7,7 @@ import ru.bekh.training.datastructures.stack.LinkedListStack;
 import ru.bekh.training.datastructures.stack.Stack;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
@@ -16,6 +17,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
         private Node right;
 
         public Node(T value) {
+            Objects.requireNonNull(value, "Node value can not be null");
             this.value = value;
         }
 
@@ -34,7 +36,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
         public int find(T element) {
             int result = 0;
-            if (value == element) {
+            if (value.equals(element)) {
                 ++result;
             }
 
@@ -55,7 +57,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
             return right == null ^ left == null ;
         }
 
-        private Node singleChild() {
+        private Node thatSingleChild() {
             if (!hasExactlyOneChild()) {
                 throw new RuntimeException("Invalid call");
             }
@@ -79,12 +81,10 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
         }
 
         public boolean remove(T element) {
-            if (value == null) {
-                return false;
-            } else if (right != null && right.value == element) {
+            if (right != null && right.value.equals(element)) {
                 right = right.getReplacementForRemoval();
                 return true;
-            }else if (left != null && left.value == element) {
+            }else if (left != null && left.value.equals(element)) {
                 left = left.getReplacementForRemoval();
                 return true;
             } else {
@@ -97,11 +97,28 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
             if (hasNoChildren()) {
                 return null;
             } else if (hasExactlyOneChild()) {
-                return singleChild();
+                return thatSingleChild();
             } else {
-                //TODO
-                return null;
+                Node replacement = right.getMinNode();
+                right.remove(replacement.value);
+
+                if (replacement != right) {
+                    replacement.right = right;
+                }
+
+                replacement.left = left;
+
+                return replacement;
             }
+        }
+
+        private Node getMinNode() {
+            return left == null ? this : left.getMinNode();
+        }
+
+        @Override
+        public String toString() {
+            return  (left != null ? left.value : "-") + "(" + value + ")" + (right != null ? right.value : "-");
         }
     }
 
@@ -331,7 +348,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
             return false;
         }
 
-        if (root.value == element) {
+        if (root.value.equals(element)) {
             root = root.getReplacementForRemoval();
             return true;
         }
@@ -343,7 +360,11 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     @Override
     public int removeAll(T element) {
-        return 0;
+        int count = 0;
+        while (remove(element)) {
+            count++;
+        }
+        return count;
     }
 
     @Override

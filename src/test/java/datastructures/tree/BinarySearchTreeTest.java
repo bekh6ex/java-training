@@ -2,10 +2,7 @@ package ru.bekh.training.datastructures.tree;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -217,11 +214,43 @@ public class BinarySearchTreeTest {
     }
 
 
-    private <T1> IteratorTestWrapper<T1> checkThat(Iterator<T1> iterator) {
+    @Test
+    public void remove_MultipleItemsAddedAlmostHalfOfThemRemoved_IteratesInorderCorrectly()
+    {
+
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+
+        int upperBoundary = 100000;
+        int boundary = upperBoundary/2;
+        ArrayList<Integer> orderedList = new ArrayList<>(
+                IntStream.rangeClosed(1, upperBoundary).boxed().collect(Collectors.toList()));
+        ArrayList<Integer> clone = (ArrayList<Integer>) orderedList.clone();
+        Collections.shuffle(clone);
+        tree.add(clone);
+
+        new Random().ints(boundary, 1, boundary).forEach(tree::remove);
+
+        IntStream.rangeClosed(boundary + 1, upperBoundary).forEach(e -> {
+            assertThat("Tree should contain " + e, tree.contains(e), is(true));
+        });
+
+        checkThat(tree.iterator(Tree.IterationStrategy.INORDER)).doesCorrectInorderIteration();
+    }
+
+    @Test
+    public void removeAll_MultipleElementsAddedAndRemoved_ReturnsCountOfElementsRemoved()
+    {
+        tree.add(1,1,1);
+
+        assertThat(tree.removeAll(1), is(equalTo(3)));
+    }
+
+
+    private <T1 extends Comparable<T1>> IteratorTestWrapper<T1> checkThat(Iterator<T1> iterator) {
         return new IteratorTestWrapper(iterator);
     }
 
-    private static class IteratorTestWrapper<T> implements Iterator<T> {
+    private static class IteratorTestWrapper<T extends Comparable<T>> implements Iterator<T> {
 
         private final Iterator<T> iterator;
 
@@ -230,17 +259,27 @@ public class BinarySearchTreeTest {
         }
 
         public void iteratesInFollowingOrder(T... items) {
-            List<T> list = new ArrayList<>();
-            this.iterator.forEachRemaining((i) -> {
-                list.add(i);
-            });
-
-            List<T> expectedList = new ArrayList<>(asList(items));
-            assertThat(list, is(equalTo(expectedList)));
+            iteratesInFollowingOrder(asList(items));
         }
 
         public void iteratesInFollowingOrder(List<T> items) {
-            iteratesInFollowingOrder((T[]) items.toArray());
+            List<T> list = new ArrayList<>();
+            this.iterator.forEachRemaining(list::add);
+
+            List<T> expectedList = new ArrayList<>(items);
+            assertThat(list, is(equalTo(expectedList)));
+        }
+
+        public void doesCorrectInorderIteration() {
+            T prev = null;
+            while (iterator.hasNext()) {
+                T current = iterator.next();
+                if (prev != null) {
+                    assertThat(prev.compareTo(prev) <= 0, is(true));
+                }
+
+                prev = current;
+            }
         }
 
         @Override
