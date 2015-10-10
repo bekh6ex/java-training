@@ -1,11 +1,14 @@
 package ru.bekh.training.datastructures.stack;
 
+import java.util.Objects;
+
 public class LinkedListStack<T> implements Stack<T> {
     private class Node {
         Node prev;
         T value;
 
         public Node(Node prev, T value) {
+            Objects.requireNonNull(value, "You can not push null to the stack");
             this.prev = prev;
             this.value = value;
         }

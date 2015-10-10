@@ -10,23 +10,135 @@ import java.util.Iterator;
 
 public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
+    class Node {
+        private final T value;
+        private Node left;
+        private Node right;
+
+        public Node(T value) {
+            this.value = value;
+        }
+
+        private Node treeToSearchForTheElement(T element) {
+            return element.compareTo(value) <= 0 ? left : right;
+        }
+
+        public boolean contains(T element) {
+            if (value.equals(element)) {
+                return true;
+            }
+
+            Node subTree = treeToSearchForTheElement(element);
+            return subTree != null && subTree.contains(element);
+        }
+
+        public int find(T element) {
+            int result = 0;
+            if (value == element) {
+                ++result;
+            }
+
+            Node subTree = treeToSearchForTheElement(element);
+            if (subTree != null) {
+                result += subTree.find(element);
+            }
+
+            return result;
+        }
+
+
+        private boolean hasNoChildren() {
+            return right == null && left == null;
+        }
+
+        private boolean hasExactlyOneChild() {
+            return right == null ^ left == null ;
+        }
+
+        private Node singleChild() {
+            if (!hasExactlyOneChild()) {
+                throw new RuntimeException("Invalid call");
+            }
+            return right == null ? left : right;
+        }
+
+        public void addToSubtree(T element) {
+            if (element.compareTo(value) <= 0) {
+                if (left == null) {
+                    left = new Node(element);
+                } else {
+                    left.addToSubtree(element);
+                }
+            } else {
+                if (right == null) {
+                    right = new Node(element);
+                } else {
+                    right.addToSubtree(element);
+                }
+            }
+        }
+
+        public boolean remove(T element) {
+            if (value == null) {
+                return false;
+            } else if (right != null && right.value == element) {
+                right = right.getReplacementForRemoval();
+                return true;
+            }else if (left != null && left.value == element) {
+                left = left.getReplacementForRemoval();
+                return true;
+            } else {
+                Node treeToSearchForTheElement = treeToSearchForTheElement(element);
+                return treeToSearchForTheElement != null && treeToSearchForTheElement.remove(element);
+            }
+        }
+
+        public Node getReplacementForRemoval() {
+            if (hasNoChildren()) {
+                return null;
+            } else if (hasExactlyOneChild()) {
+                return singleChild();
+            } else {
+                //TODO
+                return null;
+            }
+        }
+    }
+
+    private Node root;
+    @Deprecated
     private T value;
+    @Deprecated
     private BinarySearchTree<T> left;
+    @Deprecated
     private BinarySearchTree<T> right;
 
     class InOrderIterator implements Iterator {
 
-        private final BinarySearchTree<T> root = BinarySearchTree.this;
-        Stack<BinarySearchTree<T>> backTrace = new LinkedListStack<>();
-        BinarySearchTree<T> lastVisitedItem = null;
+        private Node root;
+        Stack<Node> backTrace = new LinkedListStack<>();
+        Node lastVisitedItem = null;
+        private boolean initialized = false;
 
         public InOrderIterator() {
-            backTrace.push(root);
-            movePointerToMostLeftNode();
+            tryToInitializeIfNeeded();
+        }
+
+        private void tryToInitializeIfNeeded() {
+            if (!initialized && BinarySearchTree.this.root != null) {
+                root = BinarySearchTree.this.root;
+                backTrace.push(root);
+                movePointerToMostLeftNode();
+                initialized = true;
+            }
         }
 
         @Override
         public boolean hasNext() {
+            tryToInitializeIfNeeded();
+            if (!initialized) {
+                return false;
+            }
             updateIterationPositionIfNeeded();
 
             return !backTrace.isEmpty();
@@ -34,11 +146,12 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
         @Override
         public T next() {
+            tryToInitializeIfNeeded();
             updateIterationPositionIfNeeded();
 
-            BinarySearchTree<T> currentItem = backTrace.pop();
+            Node currentItem = backTrace.pop();
             if (currentItem.right != null) {
-                BinarySearchTree<T> mostLeftTree = currentItem.right;
+                Node mostLeftTree = currentItem.right;
                 while (mostLeftTree != null) {
                     backTrace.push(mostLeftTree);
                     mostLeftTree = mostLeftTree.left;
@@ -59,7 +172,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
         }
 
         private void movePointerToMostLeftNode() {
-            BinarySearchTree<T> mostLeftTree = backTrace.top().left;
+            Node mostLeftTree = backTrace.top().left;
             while (mostLeftTree != null) {
                 backTrace.push(mostLeftTree);
                 mostLeftTree = mostLeftTree.left;
@@ -90,17 +203,17 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
     }
 
     class PreOrderIterator extends TreeIterator {
-        private final BinarySearchTree<T> root;
+        private final Node root;
         @NotNull
         private IteratorState toDoState = IteratorState.DATA_RETURN;
         private PreOrderIterator leftIterator;
         private PreOrderIterator rightIterator;
 
         public PreOrderIterator() {
-            root = BinarySearchTree.this;
+            root = BinarySearchTree.this.root;
         }
 
-        public PreOrderIterator(BinarySearchTree<T> root) {
+        public PreOrderIterator(Node root) {
             this.root = root;
         }
 
@@ -175,11 +288,13 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     class DepthFirstIterator implements Iterator {
 
-        private Queue<BinarySearchTree<T>> queue = new LinkedListQueue<>();
+        private Queue<Node> queue = new LinkedListQueue<>();
         private BinarySearchTree<T> root = BinarySearchTree.this;
 
         public DepthFirstIterator() {
-            queue.enqueue(root);
+            if (!isEmpty()) {
+                queue.enqueue(BinarySearchTree.this.root);
+            }
         }
 
         @Override
@@ -189,7 +304,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
         @Override
         public T next() {
-            BinarySearchTree<T> currentItem = queue.dequeue();
+            Node currentItem = queue.dequeue();
             if (currentItem.left != null) {
                 queue.enqueue(currentItem.left);
             }
@@ -203,68 +318,28 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     @Override
     public void add(T element) {
-        if (value == null) {
-            value = element;
-            return;
-        }
-
-        if (element.compareTo(value) <= 0) {
-            leftTree().add(element);
+        if (root == null) {
+            root = new Node(element);
         } else {
-            rightTree().add(element);
+            root.addToSubtree(element);
         }
-    }
-
-    private BinarySearchTree<T> leftTree() {
-        if (left == null) {
-            left = new BinarySearchTree<>();
-        }
-        return left;
-    }
-
-    private BinarySearchTree<T> rightTree() {
-        if (right == null) {
-            right = new BinarySearchTree<>();
-        }
-        return right;
     }
 
     @Override
     public boolean remove(T element) {
-        if (value == null) {
+        if (isEmpty()) {
             return false;
-        } else if (right != null && right.value == element) {
-            if (right.hasNoChildren()) {
-                right = null;
-            } else if (right.hasOneChild()) {
-                right = right.singleChild();
-            } else {
-                //asd
-            }
-            return true;
-        } else if (element == value) {
-            value = null;
-            return true;
-        } else {
-            BinarySearchTree<T> treeToSearchForTheElement = treeToSearchForTheElement(element);
-            return treeToSearchForTheElement != null && treeToSearchForTheElement.remove(element);
         }
-    }
 
-    private BinarySearchTree<T> singleChild() {
-        if (!hasOneChild()) {
-            throw new RuntimeException("Invalid call");
+        if (root.value == element) {
+            root = root.getReplacementForRemoval();
+            return true;
         }
-        return right == null ? left : right;
+
+        return root.remove(element);
+
     }
 
-    private boolean hasOneChild() {
-        return right == null ^ left == null ;
-    }
-
-    private boolean hasNoChildren() {
-        return right == null && left == null;
-    }
 
     @Override
     public int removeAll(T element) {
@@ -273,38 +348,12 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     @Override
     public int find(T element) {
-        if (isEmpty()) {
-            return 0;
-        }
-
-        int result = 0;
-        if (value == element) {
-            ++result;
-        }
-
-        BinarySearchTree<T> treeToSearchForTheElement = treeToSearchForTheElement(element);
-        if (treeToSearchForTheElement != null) {
-            result += treeToSearchForTheElement.find(element);
-        }
-
-        return result;
+        return isEmpty() ? 0 : root.find(element);
     }
 
     @Override
     public boolean contains(T element) {
-        if (isEmpty()) {
-            return false;
-        }
-        if (value == element) {
-            return true;
-        }
-
-        BinarySearchTree<T> treeToSearch = treeToSearchForTheElement(element);
-        return treeToSearch != null && treeToSearch.contains(element);
-    }
-
-    private BinarySearchTree<T> treeToSearchForTheElement(T element) {
-        return element.compareTo(value) <= 0 ? left : right;
+        return !isEmpty() && root.contains(element);
     }
 
 
@@ -315,7 +364,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     @Override
     public boolean isEmpty() {
-        return value == null;
+        return root == null;
     }
 
     @Override

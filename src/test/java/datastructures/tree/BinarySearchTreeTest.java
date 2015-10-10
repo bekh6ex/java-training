@@ -1,6 +1,5 @@
 package ru.bekh.training.datastructures.tree;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -207,7 +206,7 @@ public class BinarySearchTreeTest {
         assertThat(tree.find(3), is(equalTo(0)));
     }
 
-    @Test @Ignore
+    @Test
     public void remove_LeftLeafNode_RemovesIt()
     {
         tree.add(2, 1, 3);
