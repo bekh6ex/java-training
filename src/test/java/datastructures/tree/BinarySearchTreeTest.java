@@ -151,6 +151,28 @@ public class BinarySearchTreeTest {
         checkThat(tree.iterator(Tree.IterationStrategy.LEVEL_ORDER)).iteratesInFollowingOrder(4,2,6,1,3,5,7);
     }
 
+    @Test
+    public void iteratePreOrder_SingleValue_IteratesIt()
+    {
+        tree.add(1);
+
+        checkThat(tree.iterator(Tree.IterationStrategy.PREORDER)).iteratesInFollowingOrder(1);
+    }
+
+    @Test
+    public void iteratePreOrder_TreeGoesOnlyOnTheLeft_IteratesIt()
+    {
+        tree.add(3,2,1);
+
+        Iterator<Integer> iterator = tree.iterator(Tree.IterationStrategy.PREORDER);
+        checkThat(tree.iterator(Tree.IterationStrategy.PREORDER)).iteratesInFollowingOrder(3,2,1);
+        assertThat(iterator.next(), is(equalTo(3)));
+        assertThat(iterator.next(), is(equalTo(2)));
+        assertThat(iterator.next(), is(equalTo(1)));
+
+        checkThat(tree.iterator(Tree.IterationStrategy.PREORDER)).iteratesInFollowingOrder(3,2,1);
+    }
+
 
     private <T1> IteratorTestWrapper<T1> checkThat(Iterator<T1> iterator) {
         return new IteratorTestWrapper(iterator);
@@ -166,7 +188,9 @@ public class BinarySearchTreeTest {
 
         public void iteratesInFollowingOrder(T... items) {
             List<T> list = new ArrayList<>();
-            this.iterator.forEachRemaining(list::add);
+            this.iterator.forEachRemaining((i) -> {
+                list.add(i);
+            });
 
             List<T> expectedList = new ArrayList<>(asList(items));
             assertThat(list, is(equalTo(expectedList)));

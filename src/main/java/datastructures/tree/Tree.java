@@ -5,7 +5,8 @@ import java.util.List;
 
 interface Tree<T extends Comparable<T>> {
     enum IterationStrategy {
-        DEPTH_FIRST,
+        LEVEL_ORDER,
+        PREORDER,
         INORDER
     }
 

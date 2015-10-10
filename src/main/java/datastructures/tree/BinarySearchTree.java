@@ -1,5 +1,6 @@
 package ru.bekh.training.datastructures.tree;
 
+import com.sun.istack.internal.NotNull;
 import ru.bekh.training.datastructures.queue.LinkedListQueue;
 import ru.bekh.training.datastructures.queue.Queue;
 import ru.bekh.training.datastructures.stack.LinkedListStack;
@@ -63,6 +64,112 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
                 backTrace.push(mostLeftTree);
                 mostLeftTree = mostLeftTree.left;
             }
+        }
+    }
+
+    enum IteratorState { DATA_RETURN, LEFT_TRAVERSAL, RIGHT_TRAVERSAL }
+
+    abstract class TreeIterator implements Iterator {
+        @Override
+        abstract public boolean hasNext();
+
+        @Override
+        abstract public T next();
+    }
+
+    class NullIterator extends TreeIterator {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public T next() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    class PreOrderIterator extends TreeIterator {
+        private final BinarySearchTree<T> root;
+        @NotNull
+        private IteratorState toDoState = IteratorState.DATA_RETURN;
+        private PreOrderIterator leftIterator;
+        private PreOrderIterator rightIterator;
+
+        public PreOrderIterator() {
+            root = BinarySearchTree.this;
+        }
+
+        public PreOrderIterator(BinarySearchTree<T> root) {
+            this.root = root;
+        }
+
+        @Override
+        public boolean hasNext() {
+            boolean result;
+            switch (toDoState) {
+                case DATA_RETURN:
+                    result = root.value != null;
+                    break;
+                case RIGHT_TRAVERSAL:
+                    result = rightIterator().hasNext();
+                    break;
+                case LEFT_TRAVERSAL:
+                    result = leftIterator().hasNext() || rightIterator().hasNext();
+                    break;
+                default:
+                    throw new RuntimeException("Can`t happen");
+            }
+
+            return result;
+        }
+
+        private TreeIterator rightIterator() {
+            if (rightIterator == null) {
+                if (root.right != null) {
+                    rightIterator = new PreOrderIterator(root.right);
+                } else {
+                    return new NullIterator();
+                }
+            }
+            return rightIterator;
+        }
+
+        private TreeIterator leftIterator() {
+            if (leftIterator == null) {
+                if (root.left != null) {
+                    leftIterator = new PreOrderIterator(root.left);
+                } else {
+                    return new NullIterator();
+                }
+            }
+            return leftIterator;
+        }
+
+        @Override
+        public T next() {
+            T result;
+            switch (toDoState) {
+                case DATA_RETURN:
+                    toDoState = IteratorState.LEFT_TRAVERSAL;
+                    result = root.value;
+                    break;
+                case RIGHT_TRAVERSAL:
+                    result = rightIterator().next();
+                    break;
+                case LEFT_TRAVERSAL:
+                    if (leftIterator().hasNext()) {
+                        result = leftIterator().next();
+                    } else {
+                        toDoState = IteratorState.RIGHT_TRAVERSAL;
+                        result = next();
+                    }
+                    break;
+                default:
+                    throw new RuntimeException("Can`t happen");
+            }
+
+            return result;
         }
     }
 
@@ -186,8 +293,11 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
             case INORDER:
                 iterator = new InOrderIterator();
                 break;
-            case DEPTH_FIRST:
+            case LEVEL_ORDER:
                 iterator = new DepthFirstIterator();
+                break;
+            case PREORDER:
+                iterator = new PreOrderIterator();
                 break;
             default:
                 throw new RuntimeException("Unknown strategy");
