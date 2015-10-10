@@ -231,7 +231,39 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     @Override
     public boolean remove(T element) {
-        return false;
+        if (value == null) {
+            return false;
+        } else if (right != null && right.value == element) {
+            if (right.hasNoChildren()) {
+                right = null;
+            } else if (right.hasOneChild()) {
+                right = right.singleChild();
+            } else {
+                //asd
+            }
+            return true;
+        } else if (element == value) {
+            value = null;
+            return true;
+        } else {
+            BinarySearchTree<T> treeToSearchForTheElement = treeToSearchForTheElement(element);
+            return treeToSearchForTheElement != null && treeToSearchForTheElement.remove(element);
+        }
+    }
+
+    private BinarySearchTree<T> singleChild() {
+        if (!hasOneChild()) {
+            throw new RuntimeException("Invalid call");
+        }
+        return right == null ? left : right;
+    }
+
+    private boolean hasOneChild() {
+        return right == null ^ left == null ;
+    }
+
+    private boolean hasNoChildren() {
+        return right == null && left == null;
     }
 
     @Override
@@ -304,6 +336,4 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
         }
         return iterator;
     }
-
-
 }

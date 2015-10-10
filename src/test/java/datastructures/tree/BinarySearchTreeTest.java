@@ -1,5 +1,6 @@
 package ru.bekh.training.datastructures.tree;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -171,6 +172,49 @@ public class BinarySearchTreeTest {
         assertThat(iterator.next(), is(equalTo(1)));
 
         checkThat(tree.iterator(Tree.IterationStrategy.PREORDER)).iteratesInFollowingOrder(3,2,1);
+    }
+
+    @Test
+    public void remove_OnlyElement_TreeIsEmpty() {
+        tree.add(1);
+
+        tree.remove(1);
+
+        assertThat(tree.isEmpty(), is(true));
+    }
+
+    @Test
+    public void remove_ExistingElement_ReturnsTrue() {
+        tree.add(1);
+
+        assertThat(tree.remove(1), is(true));
+    }
+
+    @Test
+    public void remove_NonexistentElement_ReturnsTrue() {
+        tree.add(1);
+
+        assertThat(tree.remove(2), is(false));
+    }
+
+    @Test
+    public void remove_RightLeafNode_RemovesIt()
+    {
+        tree.add(2, 1, 3);
+
+        tree.remove(3);
+
+        assertThat(tree.find(3), is(equalTo(0)));
+    }
+
+    @Test @Ignore
+    public void remove_LeftLeafNode_RemovesIt()
+    {
+        tree.add(2, 1, 3);
+
+        tree.remove(1);
+
+        assertThat(tree.find(1), is(equalTo(0)));
     }
 
 
