@@ -245,6 +245,41 @@ public class BinarySearchTreeTest {
         assertThat(tree.removeAll(1), is(equalTo(3)));
     }
 
+    @Test
+    public void height_EmptyTree_ReturnsZero() {
+        assertThat(tree.height(), is(equalTo(0)));
+    }
+
+    @Test
+    public void height_SimgleElement_ReturnsOne() {
+        tree.add(1);
+
+        assertThat(tree.height(), is(equalTo(1)));
+    }
+
+    @Test
+    public void height_TwoElements_ReturnsTwo() {
+        tree.add(1, 2);
+
+        assertThat(tree.height(), is(equalTo(2)));
+    }
+
+    @Test
+    public void height_ThreeLevelTree_ReturnsThree()
+    {
+        tree.add(4,2,6,1,3,5,7);
+
+        assertThat(tree.height(), is(equalTo(3)));
+    }
+
+    @Test
+    public void height_ElementsAddedInIncreasingOrder_ReturnsElementsCount()
+    {
+        tree.add(1,2,3,4,5,6,7);
+
+        assertThat(tree.height(), is(equalTo(7)));
+    }
+
 
     private <T1 extends Comparable<T1>> IteratorTestWrapper<T1> checkThat(Iterator<T1> iterator) {
         return new IteratorTestWrapper(iterator);

@@ -9,6 +9,8 @@ import ru.bekh.training.datastructures.stack.Stack;
 import java.util.Iterator;
 import java.util.Objects;
 
+import static java.lang.Integer.max;
+
 public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     class Node {
@@ -119,6 +121,17 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
         @Override
         public String toString() {
             return  (left != null ? left.value : "-") + "(" + value + ")" + (right != null ? right.value : "-");
+        }
+
+        public int height() {
+            int leftHeight = subtreeHeight(left);
+            int rightHeight = subtreeHeight(right);
+
+            return max(leftHeight, rightHeight) + 1;
+        }
+
+        private int subtreeHeight(Node node) {
+            return node == null ? 0 :node.height();
         }
     }
 
@@ -374,7 +387,12 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     @Override
     public int height() {
-        return 0;
+        if (isEmpty()) {
+            return 0;
+        }
+
+
+        return root.height();
     }
 
     @Override
