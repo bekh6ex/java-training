@@ -1,6 +1,8 @@
 package ru.bekh.training.datastructures.tree;
 
 import org.junit.Test;
+import ru.bekh.training.datastructures.Collection;
+import ru.bekh.training.datastructures.CollectionTest;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -12,60 +14,26 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class BinarySearchTreeTest {
+public class BinarySearchTreeTest extends CollectionTest {
 
-    BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+    protected Collection<Integer> collection() {
+        return tree;
+    }
+
+    private final BinarySearchTree<Integer> tree = new BinarySearchTree<>();
 
     @Test
     public void add_SingleNumber_CanFindThatNumber()
     {
-        tree.add(1);
+        collection().add(1);
 
-        assertThat(tree.contains(1), is(true));
-    }
-
-    @Test
-    public void contains_NothingAdded_ShouldNotFindAnything()
-    {
-        assertThat(tree.contains(1), is(false));
-    }
-
-    @Test
-    public void add_MultipleNumbersAdded_CanFindAll() {
-        tree.add(1);
-        tree.add(2);
-        tree.add(3);
-
-        assertThat(tree.contains(1), is(true));
-        assertThat(tree.contains(2), is(true));
-        assertThat(tree.contains(3), is(true));
-    }
-
-    @Test
-    public void find_MultipleSameElementsAdded_ReturnsCountOfThatElements()
-    {
-        tree.add(1);
-        tree.add(1);
-        tree.add(1);
-
-        assertThat(tree.find(1), is(equalTo(3)));
-    }
-
-    @Test
-    public void find_MultipleSameAndSomeOfDifferentElementsAdded_ReturnsCountOfSameElements()
-    {
-        tree.add(1);
-        tree.add(1);
-        tree.add(2);
-        tree.add(3);
-
-        assertThat(tree.find(1), is(equalTo(2)));
+        assertThat(collection().contains(1), is(true));
     }
 
     @Test
     public void iterateInOrder_AddedInReversedOrder_TraversesInorder()
     {
-        tree.add(3, 2, 1);
+        collection().add(3, 2, 1);
 
         Iterator<Integer> iterator = tree.iterator(Tree.IterationStrategy.INORDER);
 
@@ -79,7 +47,7 @@ public class BinarySearchTreeTest {
     @Test
     public void iterateInOrder_AddedInStraightOrder_TraversesInorder()
     {
-        tree.add(1 ,2, 3);
+        collection().add(1, 2, 3);
 
         Iterator<Integer> iterator = tree.iterator(Tree.IterationStrategy.INORDER);
 
@@ -107,19 +75,19 @@ public class BinarySearchTreeTest {
     @Test
     public void iterateInOrder_ItemsAddedWhileIterating_TraversesThisItems()
     {
-        BinarySearchTree<Integer>.InOrderIterator iterator = (BinarySearchTree<Integer>.InOrderIterator)tree.iterator(Tree.IterationStrategy.INORDER);
-        tree.add(1);
+        BinarySearchTree<Integer>.InOrderIterator iterator = (BinarySearchTree<Integer>.InOrderIterator) tree.iterator(Tree.IterationStrategy.INORDER);
+        collection().add(1);
         assertThat(iterator.next(), is(equalTo(1)));
         assertThat(iterator.hasNext(), is(false));
-        tree.add(4, 3, 2);
+        collection().add(4, 3, 2);
         assertThat(iterator.next(), is(equalTo(2)));
         assertThat(iterator.next(), is(equalTo(3)));
         assertThat(iterator.next(), is(equalTo(4)));
         assertThat(iterator.hasNext(), is(false));
-        tree.add(6, 7);
+        collection().add(6, 7);
         assertThat(iterator.next(), is(equalTo(6)));
         assertThat(iterator.hasNext(), is(true));
-        tree.add(5);
+        collection().add(5);
         assertThat(iterator.next(), is(equalTo(7)));
         assertThat(iterator.hasNext(), is(false));
     }
@@ -127,7 +95,7 @@ public class BinarySearchTreeTest {
     @Test
     public void iterateLevelOrder_SingleItem_IteratesIt()
     {
-        tree.add(1);
+        collection().add(1);
 
         checkThat(tree.iterator(Tree.IterationStrategy.LEVEL_ORDER)).iteratesInFollowingOrder(1);
     }
@@ -135,7 +103,7 @@ public class BinarySearchTreeTest {
     @Test
     public void iterateLevelOrder_RootNodeHasTwoChildren_IteratesIt()
     {
-        tree.add(2,1,3);
+        collection().add(2, 1, 3);
 
         checkThat(tree.iterator(Tree.IterationStrategy.LEVEL_ORDER)).iteratesInFollowingOrder(2,1,3);
     }
@@ -143,7 +111,7 @@ public class BinarySearchTreeTest {
     @Test
     public void iterateLevelOrder_ThreeLevelTree_IteratesIt()
     {
-        tree.add(4,2,6,1,3,5,7);
+        collection().add(4, 2, 6, 1, 3, 5, 7);
 
         checkThat(tree.iterator(Tree.IterationStrategy.LEVEL_ORDER)).iteratesInFollowingOrder(4,2,6,1,3,5,7);
     }
@@ -151,7 +119,7 @@ public class BinarySearchTreeTest {
     @Test
     public void iteratePreOrder_SingleValue_IteratesIt()
     {
-        tree.add(1);
+        collection().add(1);
 
         checkThat(tree.iterator(Tree.IterationStrategy.PREORDER)).iteratesInFollowingOrder(1);
     }
@@ -159,7 +127,7 @@ public class BinarySearchTreeTest {
     @Test
     public void iteratePreOrder_TreeGoesOnlyOnTheLeft_IteratesIt()
     {
-        tree.add(3,2,1);
+        collection().add(3, 2, 1);
 
         Iterator<Integer> iterator = tree.iterator(Tree.IterationStrategy.PREORDER);
         checkThat(tree.iterator(Tree.IterationStrategy.PREORDER)).iteratesInFollowingOrder(3,2,1);
@@ -170,54 +138,10 @@ public class BinarySearchTreeTest {
         checkThat(tree.iterator(Tree.IterationStrategy.PREORDER)).iteratesInFollowingOrder(3,2,1);
     }
 
-    @Test
-    public void remove_OnlyElement_TreeIsEmpty() {
-        tree.add(1);
-
-        tree.remove(1);
-
-        assertThat(tree.isEmpty(), is(true));
-    }
-
-    @Test
-    public void remove_ExistingElement_ReturnsTrue() {
-        tree.add(1);
-
-        assertThat(tree.remove(1), is(true));
-    }
-
-    @Test
-    public void remove_NonexistentElement_ReturnsTrue() {
-        tree.add(1);
-
-        assertThat(tree.remove(2), is(false));
-    }
-
-    @Test
-    public void remove_RightLeafNode_RemovesIt()
-    {
-        tree.add(2, 1, 3);
-
-        tree.remove(3);
-
-        assertThat(tree.find(3), is(equalTo(0)));
-    }
-
-    @Test
-    public void remove_LeftLeafNode_RemovesIt()
-    {
-        tree.add(2, 1, 3);
-
-        tree.remove(1);
-
-        assertThat(tree.find(1), is(equalTo(0)));
-    }
-
 
     @Test
     public void remove_MultipleItemsAddedAlmostHalfOfThemRemoved_IteratesInorderCorrectly()
     {
-
         BinarySearchTree<Integer> tree = new BinarySearchTree<>();
 
         int upperBoundary = 100000;
@@ -230,19 +154,9 @@ public class BinarySearchTreeTest {
 
         new Random().ints(boundary, 1, boundary).forEach(tree::remove);
 
-        IntStream.rangeClosed(boundary + 1, upperBoundary).forEach(e -> {
-            assertThat("Tree should contain " + e, tree.contains(e), is(true));
-        });
+        IntStream.rangeClosed(boundary + 1, upperBoundary).forEach(e -> assertThat("Tree should contain " + e, tree.contains(e), is(true)));
 
         checkThat(tree.iterator(Tree.IterationStrategy.INORDER)).doesCorrectInorderIteration();
-    }
-
-    @Test
-    public void removeAll_MultipleElementsAddedAndRemoved_ReturnsCountOfElementsRemoved()
-    {
-        tree.add(1,1,1);
-
-        assertThat(tree.removeAll(1), is(equalTo(3)));
     }
 
     @Test
@@ -267,7 +181,7 @@ public class BinarySearchTreeTest {
     @Test
     public void height_ThreeLevelTree_ReturnsThree()
     {
-        tree.add(4,2,6,1,3,5,7);
+        tree.add(4, 2, 6, 1, 3, 5, 7);
 
         assertThat(tree.height(), is(equalTo(3)));
     }
@@ -275,7 +189,7 @@ public class BinarySearchTreeTest {
     @Test
     public void height_ElementsAddedInIncreasingOrder_ReturnsElementsCount()
     {
-        tree.add(1,2,3,4,5,6,7);
+        tree.add(1, 2, 3, 4, 5, 6, 7);
 
         assertThat(tree.height(), is(equalTo(7)));
     }
@@ -293,6 +207,7 @@ public class BinarySearchTreeTest {
             this.iterator = iterator;
         }
 
+        @SuppressWarnings("unchecked")
         public void iteratesInFollowingOrder(T... items) {
             iteratesInFollowingOrder(asList(items));
         }

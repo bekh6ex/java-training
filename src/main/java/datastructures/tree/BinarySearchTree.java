@@ -13,6 +13,7 @@ import static java.lang.Integer.max;
 
 public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
+
     class Node {
         private final T value;
         private Node left;
@@ -418,4 +419,5 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
         }
         return iterator;
     }
+
 }
