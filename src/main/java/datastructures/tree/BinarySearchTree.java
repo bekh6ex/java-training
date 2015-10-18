@@ -123,17 +123,11 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
     }
 
     private Node root;
-    @Deprecated
-    private T value;
-    @Deprecated
-    private BinarySearchTree<T> left;
-    @Deprecated
-    private BinarySearchTree<T> right;
 
     class InOrderIterator implements Iterator {
 
         private Node root;
-        Stack<Node> backTrace = new LinkedListStack<>();
+        final Stack<Node> backTrace = new LinkedListStack<>();
         Node lastVisitedItem = null;
         private boolean initialized = false;
 
@@ -239,7 +233,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
             boolean result;
             switch (toDoState) {
                 case DATA_RETURN:
-                    result = root.value != null;
+                    result = root != null;
                     break;
                 case RIGHT_TRAVERSAL:
                     result = rightIterator().hasNext();
@@ -305,8 +299,8 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     class DepthFirstIterator implements Iterator {
 
-        private Queue<Node> queue = new LinkedListQueue<>();
-        private BinarySearchTree<T> root = BinarySearchTree.this;
+        private final Queue<Node> queue = new LinkedListQueue<>();
+        private final BinarySearchTree<T> root = BinarySearchTree.this;
 
         public DepthFirstIterator() {
             if (!isEmpty()) {
@@ -388,7 +382,7 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
         return root == null;
     }
 
-    @Override
+    @Override @SuppressWarnings("unchecked")
     public Iterator<T> iterator(IterationStrategy strategy) {
         Iterator<T> iterator;
         switch (strategy) {
