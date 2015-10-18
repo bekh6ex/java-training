@@ -1,6 +1,7 @@
 package ru.bekh.training.datastructures.list;
 
 import org.junit.Test;
+import ru.bekh.training.datastructures.Collection;
 import ru.bekh.training.datastructures.CollectionTest;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -145,4 +146,9 @@ abstract public class ListTest extends CollectionTest {
     }
 
     abstract protected List<Integer> list();
+
+    @Override
+    protected Collection<Integer> collection() {
+        return list();
+    }
 }
