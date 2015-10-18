@@ -365,16 +365,6 @@ public class BinarySearchTree<T extends Comparable<T>> implements Tree<T> {
 
     }
 
-
-    @Override
-    public int removeAll(T element) {
-        int count = 0;
-        while (remove(element)) {
-            count++;
-        }
-        return count;
-    }
-
     @Override
     public int find(T element) {
         return isEmpty() ? 0 : root.find(element);

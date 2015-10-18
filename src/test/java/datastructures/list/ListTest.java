@@ -1,11 +1,12 @@
 package ru.bekh.training.datastructures.list;
 
 import org.junit.Test;
+import ru.bekh.training.datastructures.CollectionTest;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
-abstract public class ListTest {
+abstract public class ListTest extends CollectionTest {
 
     @Test
     public void canAddAndGetSingleElementBack() {

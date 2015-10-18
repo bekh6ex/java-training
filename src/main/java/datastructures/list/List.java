@@ -1,6 +1,8 @@
 package ru.bekh.training.datastructures.list;
 
-public interface List<T> {
+import ru.bekh.training.datastructures.Collection;
+
+public interface List<T> extends Collection<T> {
     T get(int position);
 
     void append(T element);
@@ -14,4 +16,26 @@ public interface List<T> {
     void remove(int position);
 
     int length();
+
+    @Override
+    default void add(T element) {
+        append(element);
+    }
+
+    @Override
+    default boolean isEmpty() {
+        return length() == 0;
+    }
+
+    @Override
+    default boolean remove(T element) {
+        for (int position = 0; position < length(); ++position) {
+            if (get(position).equals(element)) {
+                remove(position);
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

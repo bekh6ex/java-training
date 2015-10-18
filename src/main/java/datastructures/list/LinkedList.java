@@ -3,7 +3,27 @@ package ru.bekh.training.datastructures.list;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.util.Iterator;
+
 public class LinkedList<T> implements List<T> {
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private Node node = head;
+            @Override
+            public boolean hasNext() {
+                return node != null;
+            }
+
+            @Override
+            public T next() {
+                T next = node.value;
+                node = node.next;
+                return next;
+            }
+        };
+    }
 
     private class Node {
         T value;

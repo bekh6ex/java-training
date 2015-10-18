@@ -1,5 +1,7 @@
 package ru.bekh.training.datastructures.list;
 
+import java.util.Iterator;
+
 public class ArrayList<T> implements List<T> {
 
     private T[] list = (T[]) new Object[0];
@@ -60,7 +62,25 @@ public class ArrayList<T> implements List<T> {
     public int length() {
         return list.length;
     }
+
     private boolean isOutOfBounds(int position) {
         return position > list.length - 1;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            int position = 0;
+
+            @Override
+            public boolean hasNext() {
+                return position < list.length;
+            }
+
+            @Override
+            public T next() {
+                return list[position++];
+            }
+        };
     }
 }

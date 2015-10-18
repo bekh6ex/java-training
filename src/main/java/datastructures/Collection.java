@@ -19,11 +19,34 @@ public interface Collection<T> extends Iterable<T> {
 
     boolean remove(T element);
 
-    int removeAll(T element);
+    default int removeAll(T element) {
+        int count = 0;
+        while (remove(element)) {
+            count++;
+        }
+        return count;
+    }
 
-    int find(T element);
+    default int find(T element) {
+        int count = 0;
+        for (T e : this) {
+            if (e.equals(element)) {
+                count++;
+            }
+        }
 
-    boolean contains(T element);
+        return count;
+    }
+
+    default boolean contains(T element) {
+        for (T e : this) {
+            if (e.equals(element)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     boolean isEmpty();
 }
